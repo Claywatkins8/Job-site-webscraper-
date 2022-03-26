@@ -1,5 +1,5 @@
 #!/bin/sh
-'''exec' "/Users/claytonwatkins/Documents/Clayton Watkins Development - Freelance/python-bots/nursing-bot/.venv/bin/python3" "$0" "$@"
+'''exec' "/Users/claytonwatkins/Documents/Clayton Watkins Development - Freelance/python-bots/nursing-bot/.venv/bin/python" "$0" "$@"
 ' '''
 # -*- coding: utf-8 -*-
 import re
