@@ -52,7 +52,7 @@ def main():
     msg['Subject'] = "New job opening in BEND!"
     msg['From'] = fromAddress
     msg['To'] = toAddress      
-    msg.set_content("It looks like there is a job opening in Bend availible at \n" + url  + "\n This site requires you to search ICU and Bend,OR again after clicking the link.")
+    msg.set_content("It looks like there is a job opening in Bend availible at: \n" + url  + "\nThis site requires you to search ICU and Bend,OR again after clicking the link.")
     
     try:
         server = smtplib.SMTP('smtp.gmail.com', 587)
