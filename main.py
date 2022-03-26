@@ -1,4 +1,5 @@
 import json
+import os
 import smtplib
 import requests
 from bs4 import BeautifulSoup
@@ -34,12 +35,16 @@ def main():
     # if available:
     log += sucessmessage
     try:
-        with open('config.json') as file:
-            config = json.load(file)
-            username = config['username']
-            password = config['password']
-            fromAddress = config['fromAddress']
-            toAddress = config['toAddress']
+        # with open('config.json') as file:
+        #     config = json.load(file)
+        #     username = config['username']
+        #     password = config['password']
+        #     fromAddress = config['fromAddress']
+        #     toAddress = config['toAddress']
+        username = os.environ.get('username')
+        password = os.environ.get('password')
+        fromAddress = os.environ.get('fromAddress')
+        toAddress = os.environ.get('toAddress')
     except:
         log += "Error with the credentials file - "
         
