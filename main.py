@@ -32,46 +32,45 @@ def main():
         print("Job already found in Bend. Ending script")
         return
     
-    # if available:
-    log += sucessmessage
-    try:
-        # with open('config.json') as file:
-        #     config = json.load(file)
-        #     username = config['username']
-        #     password = config['password']
-        #     fromAddress = config['fromAddress']
-        #     toAddress = config['toAddress']
-        username = os.environ.get('username')
-        password = os.environ.get('password')
-        fromAddress = os.environ.get('fromAddress')
-        toAddress = os.environ.get('toAddress')
-    except:
-        log += "Error with the credentials file - "
+    if available:
+        log += sucessmessage
+        try:
+            # with open('config.json') as file:
+            #     config = json.load(file)
+            #     username = config['username']
+            #     password = config['password']
+            #     fromAddress = config['fromAddress']
+            #     toAddress = config['toAddress']
+            username = os.environ.get('username')
+            password = os.environ.get('password')
+            fromAddress = os.environ.get('fromAddress')
+            toAddress = os.environ.get('toAddress')
+        except:
+            log += "Error with the credentials file - "
+            
+        msg = EmailMessage()
+        msg['Subject'] = "New job opening in BEND!"
+        msg['From'] = fromAddress
+        msg['To'] = toAddress      
+        msg.set_content("It looks like there is a job opening in Bend availible at: \n" + url  + "\nThis site requires you to search ICU and Bend,OR again after clicking the link.")
         
-    msg = EmailMessage()
-    msg['Subject'] = "New job opening in BEND!"
-    msg['From'] = fromAddress
-    msg['To'] = toAddress      
-    msg.set_content("It looks like there is a job opening in Bend availible at: \n" + url  + "\nThis site requires you to search ICU and Bend,OR again after clicking the link.")
+        try:
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.ehlo()
+            server.starttls()
+            server.login(username, password)
+            
+            server.send_message(msg)
+            server.quit()
+            log += "Message sent! "
+        except:
+            log += "Error sending message "
     
-    try:
-        server = smtplib.SMTP('smtp.gmail.com', 587)
-        server.ehlo()
-        server.starttls()
-        server.login(username, password)
-        
-        server.send_message(msg)
-        server.quit()
-        log += "Message sent! "
-    except:
-        log += "Error sending message "
-    
-    # else:
-    #     log += "No job available at this time - "
+    else:
+        log += "No job available at this time - "
     
     logfile.write(str(datetime.now()) + " " + log + "\n")
     logfile.close()
         
 if __name__ == '__main__':
         main()
-        
