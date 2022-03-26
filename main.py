@@ -18,7 +18,6 @@ def check_availiblity(url, phrase):
     except:
         log += "Error parsing the website - "
 
-
 def main():
     global log
     url = "https://www.ayahealthcare.com/travel-nursing/travel-nursing-jobs/?profession=1&specialty=16&city=Bend,%20OR"
