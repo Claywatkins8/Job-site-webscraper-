@@ -1,3 +1,4 @@
+from asyncio.format_helpers import _format_callback_source
 import json
 import os
 import smtplib
@@ -7,99 +8,123 @@ from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.action_chains import ActionChains
-from bs4 import BeautifulSoup
 from datetime import datetime
 from email.message import EmailMessage
 import time
 
+log = ""
+url = "https://www.ayahealthcare.com/travel-nursing/travel-nursing-jobs/?profession=1&city=Bend,%20OR"
 
+def check_availiblity():
+    global log
+    try:
 
+        DRIVER_PATH = '/usr/local/bin/chromedriver'
+        # options = Options()
+        # options.add_argument('--headless')
+        # options.add_argument('--disable-gpu')  # Last I checked this was necessary.
+        # driver = webdriver.Chrome(DRIVER_PATH, chrome_options=options)
+        driver = webdriver.Chrome(executable_path=DRIVER_PATH)
+        driver.get(url)
 
-DRIVER_PATH = '/usr/local/bin/chromedriver'
-driver = webdriver.Chrome(executable_path=DRIVER_PATH)
-driver.get('https://www.ayahealthcare.com/travel-nursing/travel-nursing-jobs/?profession=1&city=Bend,%20OR')
+        # Set profession to RN
+        a = ActionChains(driver)
+        profession = driver.find_element_by_class_name("selection")
+        profession.click()
+        nursing = driver.find_element_by_class_name("item")
+        a.move_to_element(nursing).perform()
+        regNurse = driver.find_element_by_xpath("//div[@class='item' and text()='Registered Nurse']")
+        a.move_to_element(regNurse).perform()
+        time.sleep(1)
+        regNurse.click()
+        time.sleep(1)
 
+        # Set Specialty to ICU
+        specialty = driver.find_element_by_class_name("specialties-dropdown")
+        specialty.click()
+        time.sleep(1)
 
-a = ActionChains(driver)
-profession = driver.find_element_by_class_name("selection")
-profession.click()
-time.sleep(1)
+        icu = driver.find_element_by_xpath("//div[@class='item filter-specialty' and text()='ICU']")
+        icu.click()
+        time.sleep(1)
 
-nursing = driver.find_element_by_class_name("item")
-a.move_to_element(nursing).perform()
-time.sleep(5)
+        # Input city,state
+        location = driver.find_element_by_class_name("locations-dropdown")
+        location.click()
+        time.sleep(1)
+        city = driver.find_element_by_xpath("//div[@class='item filter-location' and text()='Bend, OR']")
+        city.click()
+        time.sleep(1)
 
-regNurse = driver.find_element_by_xpath("//div[@class='item' and text()='Registered Nurse']")
-regNurse.click()
+        # hit search button
+        button = driver.find_element_by_class_name("search-jobs")
+        button.click()
+        time.sleep(1)
+                
+        # Check text
+        string = "billy"
+        pageSource = driver.page_source
 
+        if string in pageSource:
+            print("no job, found phrase")
+            return False 
+        print("job might be available, didnt find phrase")
+        return True
 
+    except:
+        log += "Error parsing the website - "
 
-# log = ""
-
-# def check_availiblity(url, phrase):
-#     global log
-#     try:
-#         page = Request(url, headers={'User-Agent': 'Mozilla/5.0'})
-#         doc = urlopen(page).read()
-#         soup = BeautifulSoup(doc, "html.parser")
-#         if phrase in soup.get_text():
-#             return False 
-#         return True
-#     except:
-#         log += "Error parsing the website - "
-
-# def main():
-#     global log
-#     url = "https://www.ayahealthcare.com/travel-nursing/travel-nursing-jobs/?profession=1&city=Bend,%20OR"
-#     phrase = "Doh!"
-#     available = check_availiblity(url, phrase)
+def main():
+    global log
+    phrase = "Doh!"
+    available = check_availiblity()
    
-#     logfile = open('log.txt', 'r+')
+    logfile = open('log.txt', 'r+')
     
-#     sucessmessage = "Job has been found in bend - "
-#     if sucessmessage in logfile.read():
-#         print("Job already found in Bend. Ending script")
-#         return
+    sucessmessage = "Job has been found in bend - "
+    if sucessmessage in logfile.read():
+        print("Job already found in Bend. Ending script")
+        return
     
-#     if available:
-#         log += sucessmessage
-#         try:
-#             with open('config.json') as file:
-#                 config = json.load(file)
-#                 username = config['username']
-#                 password = config['password']
-#                 fromAddress = config['fromAddress']
-#                 toAddress = config['toAddress']
-#             # username = os.environ.get('username')
-#             # password = os.environ.get('password')
-#             # fromAddress = os.environ.get('fromAddress')
-#             # toAddress = os.environ.get('toAddress')
-#         except:
-#             log += "Error with the credentials file - "
+    if available:
+        log += sucessmessage
+        try:
+            with open('config.json') as file:
+                config = json.load(file)
+                username = config['username']
+                password = config['password']
+                fromAddress = config['fromAddress']
+                toAddress = config['toAddress']
+            # username = os.environ.get('username')
+            # password = os.environ.get('password')
+            # fromAddress = os.environ.get('fromAddress')
+            # toAddress = os.environ.get('toAddress')
+        except:
+            log += "Error with the credentials file - "
             
-#         msg = EmailMessage()
-#         msg['Subject'] = "New job opening in BEND!"
-#         msg['From'] = fromAddress
-#         msg['To'] = toAddress      
-#         msg.set_content("It looks like there is a job opening in Bend availible at: \n" + url  + "\nThis site requires you to search ICU and Bend,OR again after clicking the link.")
+        msg = EmailMessage()
+        msg['Subject'] = "New job opening in BEND!"
+        msg['From'] = fromAddress
+        msg['To'] = toAddress      
+        msg.set_content("It looks like there is a job opening in Bend availible at: \n" + url  + "\nThis site requires you to search ICU and Bend,OR again after clicking the link.")
         
-#         try:
-#             server = smtplib.SMTP('smtp.gmail.com', 587)
-#             server.ehlo()
-#             server.starttls()
-#             server.login(username, password)
+        try:
+            server = smtplib.SMTP('smtp.gmail.com', 587)
+            server.ehlo()
+            server.starttls()
+            server.login(username, password)
             
-#             server.send_message(msg)
-#             server.quit()
-#             log += "Message sent! "
-#         except:
-#             log += "Error sending message "
+            server.send_message(msg)
+            server.quit()
+            log += "Message sent! "
+        except:
+            log += "Error sending message "
     
-#     else:
-#         log += "No job available at this time - "
+    else:
+        log += "No job available at this time - "
     
-#     logfile.write(str(datetime.now()) + " " + log + "\n")
-#     logfile.close()
+    logfile.write(str(datetime.now()) + " " + log + "\n")
+    logfile.close()
         
-# if __name__ == '__main__':
-#         main()
+if __name__ == '__main__':
+        main()
