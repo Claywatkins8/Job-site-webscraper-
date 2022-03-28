@@ -25,7 +25,7 @@ def check_availiblity():
         options.add_argument("--window-size=1920x1080")
         options.add_argument('--no-sandbox')
         options.add_argument('--disable-gpu')
-        driver = webdriver.Chrome(executable_path=DRIVER_PATH, options=options)
+        driver = webdriver.firefox()
         driver.get(url)
  
         # driver = webdriver.Chrome(executable_path=DRIVER_PATH)
