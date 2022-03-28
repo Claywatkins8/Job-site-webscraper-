@@ -94,15 +94,15 @@ def main():
         log += sucessmessage
         try:
             with open('config.json') as file:
-                config = json.load(file)
-                username = config['username']
-                password = config['password']
-                fromAddress = config['fromAddress']
-                toAddress = config['toAddress']
-            # username = os.environ.get('username')
-            # password = os.environ.get('password')
-            # fromAddress = os.environ.get('fromAddress')
-            # toAddress = os.environ.get('toAddress')
+                # config = json.load(file)
+                # username = config['username']
+                # password = config['password']
+                # fromAddress = config['fromAddress']
+                # toAddress = config['toAddress']
+                username = os.environ.get('username')
+                password = os.environ.get('password')
+                fromAddress = os.environ.get('fromAddress')
+                toAddress = os.environ.get('toAddress')
         except:
             log += "Error with the credentials file - "
             
