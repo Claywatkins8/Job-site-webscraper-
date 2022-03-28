@@ -2,8 +2,6 @@ from asyncio.format_helpers import _format_callback_source
 import json
 import os
 import smtplib
-import requests
-from urllib.request import Request, urlopen
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support.ui import Select
@@ -27,14 +25,21 @@ def check_availiblity():
         # chrome_options.add_argument("--no-sandbox")
         # driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
         # driver.get(url)    
-            
-        options = Options()
-        options.headless = True
-        options.add_argument("--window-size=1920x1080")
-        options.add_argument('--no-sandbox')
-        options.add_argument('--disable-gpu')
+        GOOGLE_CHROME_PATH = '/app/.apt/usr/bin/google_chrome'
+        CHROMEDRIVER_PATH = '/app/.chromedriver/bin/chromedriver'
+        
+        chrome_options = webdriver.ChromeOptions()
+        chrome_options.add_argument('--disable-gpu')
+        chrome_options.add_argument('--no-sandbox')
+        chrome_options.binary_location = GOOGLE_CHROME_PATH
+                    
+        # options = Options()
+        # options.headless = True
+        # options.add_argument("--window-size=1920x1080")
+        # options.add_argument('--no-sandbox')
+        # options.add_argument('--disable-gpu')
         chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-        driver = webdriver.Chrome(xecutable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
+        driver = webdriver.Chrome(execution_path=CHROMEDRIVER_PATH, chrome_options=chrome_options)
         driver.get(url)
  
         # driver = webdriver.Chrome(executable_path=DRIVER_PATH)
