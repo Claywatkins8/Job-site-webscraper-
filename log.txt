@@ -1,2 +1,0 @@
-2022-03-27 21:45:34.338994 Error parsing the website - No job available at this time - 
-2022-03-27 21:45:46.422450 Error parsing the website - No job available at this time - 

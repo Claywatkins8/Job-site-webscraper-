@@ -18,23 +18,24 @@ url = "https://www.ayahealthcare.com/travel-nursing/travel-nursing-jobs/"
 def check_availiblity():
     global log
     try:
-        DRIVER_PATH = '/usr/local/bin/chromedriver'
+        # DRIVER_PATH = '/usr/local/bin/chromedriver'
         
-        chrome_options = webdriver.ChromeOptions()
-        chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
-        chrome_options.add_argument("--headless")
-        chrome_options.add_argument("--disable-dev-shm-usage")
-        chrome_options.add_argument("--no-sandbox")
-        driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
-        driver.get(url)    
+        # chrome_options = webdriver.ChromeOptions()
+        # chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+        # chrome_options.add_argument("--headless")
+        # chrome_options.add_argument("--disable-dev-shm-usage")
+        # chrome_options.add_argument("--no-sandbox")
+        # driver = webdriver.Chrome(executable_path=os.environ.get("CHROMEDRIVER_PATH"), chrome_options=chrome_options)
+        # driver.get(url)    
             
-        # options = Options()
-        # options.headless = True
-        # options.add_argument("--window-size=1920x1080")
-        # options.add_argument('--no-sandbox')
-        # options.add_argument('--disable-gpu')
-        # driver = webdriver.Chrome(executable_path=DRIVER_PATH, options=options)
-        # driver.get(url)
+        options = Options()
+        options.headless = True
+        options.add_argument("--window-size=1920x1080")
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-gpu')
+        chrome_options.binary_location = os.environ.get("GOOGLE_CHROME_BIN")
+        driver = webdriver.Chrome(xecutable_path=os.environ.get("CHROMEDRIVER_PATH"), options=options)
+        driver.get(url)
  
         # driver = webdriver.Chrome(executable_path=DRIVER_PATH)
         # driver.get(url)
