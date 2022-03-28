@@ -13,20 +13,26 @@ from email.message import EmailMessage
 import time
 
 log = ""
-url = "https://www.ayahealthcare.com/travel-nursing/travel-nursing-jobs/?profession=1&city=Bend,%20OR"
+url = "https://www.ayahealthcare.com/travel-nursing/travel-nursing-jobs/"
 
 def check_availiblity():
     global log
     try:
-
         DRIVER_PATH = '/usr/local/bin/chromedriver'
-        # options = Options()
-        # options.add_argument('--headless')
-        # options.add_argument('--disable-gpu')  # Last I checked this was necessary.
-        # driver = webdriver.Chrome(DRIVER_PATH, chrome_options=options)
-        driver = webdriver.Chrome(executable_path=DRIVER_PATH)
+        
+        options = Options()
+        options.headless = True
+        options.add_argument("--window-size=1920x1080")
+        options.add_argument('--no-sandbox')
+        options.add_argument('--disable-gpu')
+        driver = webdriver.Chrome(executable_path=DRIVER_PATH, options=options)
         driver.get(url)
+ 
+        # driver = webdriver.Chrome(executable_path=DRIVER_PATH)
+        # driver.get(url)
 
+        driver.execute_script("window.scrollTo(0, 900)") 
+        time.sleep(2)
         # Set profession to RN
         a = ActionChains(driver)
         profession = driver.find_element_by_class_name("selection")
@@ -62,13 +68,11 @@ def check_availiblity():
         time.sleep(1)
                 
         # Check text
-        string = "billy"
+        string = "Doh!"
         pageSource = driver.page_source
 
         if string in pageSource:
-            print("no job, found phrase")
             return False 
-        print("job might be available, didnt find phrase")
         return True
 
     except:
